@@ -35,7 +35,7 @@
 
 (defn- macro-terminating? [ch]
   (case ch
-    (\" \; \@ \^ \` \~ \( \) \[ \] \{ \} \\) true
+    (\" \@ \^ \` \~ \( \) \[ \] \{ \} \\) true
     false))
 
 (defn- ^String read-token
@@ -734,10 +734,10 @@
    Note that the function signature of clojure.tools.reader/read and
    clojure.tools.reader.edn/read is not the same for eof-handling"
   ([] (read *in*))
-  ([reader] (read reader true nil false))
-  ([reader eof-error? sentinel] (read reader eof-error? sentinel false false))
+  ([reader] (read reader true nil true))
+  ([reader eof-error? sentinel] (read reader eof-error? sentinel false true))
   ([reader eof-error? sentinel recursive?] 
-    (read reader eof-error? sentinel recursive? false))
+    (read reader eof-error? sentinel recursive? true))
   ([reader eof-error? sentinel recursive? comments]
      (when (= :unknown *read-eval*)
        (reader-error "Reading disallowed - *read-eval* bound to :unknown"))

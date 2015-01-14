@@ -118,16 +118,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn ignore-comment
-  [reader & _]
+  [reader & ch]
   (skip-line reader))
 
 (defn read-comment
-  [reader & _]
+  [reader & c]
   ;;(skip-line rdr)
   (loop [sb (StringBuilder.)
          ch (read-char reader)]
     (case ch
-      \newline (str ";" sb)
+      \newline (str "(comment " sb ")")
       (recur (doto sb (.append ch)) (read-char reader)))))
 
 (defn throwing-reader
