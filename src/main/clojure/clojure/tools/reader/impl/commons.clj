@@ -117,7 +117,7 @@
 ;; readers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn ignore-comments
+(defn ignore-comment
   [reader & _]
   (skip-line reader))
 
