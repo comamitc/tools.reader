@@ -117,9 +117,18 @@
 ;; readers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn ignore-comments
+  [reader & _]
+  (skip-line reader))
+
 (defn read-comment
-  [rdr & _]
-  (skip-line rdr))
+  [reader & _]
+  ;;(skip-line rdr)
+  (loop [sb (StringBuilder.)
+         ch (read-char reader)]
+    (case ch
+      \newline (str ";" sb)
+      (recur (doto sb (.append ch)) (read-char reader)))))
 
 (defn throwing-reader
   [msg]

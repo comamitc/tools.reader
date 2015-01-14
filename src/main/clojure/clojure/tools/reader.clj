@@ -31,6 +31,8 @@
          ^:dynamic *default-data-reader-fn*
          default-data-readers)
 
+(def preserve-comments? (atom false))
+
 (defn- macro-terminating? [ch]
   (case ch
     (\" \; \@ \^ \` \~ \( \) \[ \] \{ \} \\) true
@@ -596,7 +598,7 @@
   (case ch
     \" read-string*
     \: read-keyword
-    \; read-comment
+    \; (if @preserve-comments? read-comment ignore-comments)
     \' (wrapping-reader 'quote)
     \@ (wrapping-reader 'clojure.core/deref)
     \^ read-meta
@@ -732,11 +734,14 @@
    Note that the function signature of clojure.tools.reader/read and
    clojure.tools.reader.edn/read is not the same for eof-handling"
   ([] (read *in*))
-  ([reader] (read reader true nil))
-  ([reader eof-error? sentinel] (read reader eof-error? sentinel false))
-  ([reader eof-error? sentinel recursive?]
+  ([reader] (read reader true nil false))
+  ([reader eof-error? sentinel] (read reader eof-error? sentinel false false))
+  ([reader eof-error? sentinel recursive?] 
+    (read reader eof-error? sentinel recursive? false))
+  ([reader eof-error? sentinel recursive? comments]
      (when (= :unknown *read-eval*)
        (reader-error "Reading disallowed - *read-eval* bound to :unknown"))
+     (reset! preserve-comments? comments)
      (try
        (loop []
          (log-source reader
@@ -787,7 +792,7 @@
    clojure.tools.reader.edn/read-string is not the same for eof-handling"
   [s]
   (when (and s (not (identical? s "")))
-    (read (string-push-back-reader s) true nil false)))
+    (read (string-push-back-reader s) true nil false false)))
 
 (defmacro syntax-quote
   "Macro equivalent to the syntax-quote reader macro (`)."

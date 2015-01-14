@@ -1,3 +1,11 @@
+(ns clojure.tools.common-tests
+  (:refer-clojure :exclude [read-string *default-data-reader-fn* read])
+  (:use [clojure.tools.reader :only [read *default-data-reader-fn* read-string]]
+        [clojure.test :only [deftest is]])
+  (:require [clojure.tools.reader.reader-types 
+    :refer [string-push-back-reader]])
+  (:import clojure.lang.BigInt))
+
 
 (deftest read-integer
   (is (== 42 (read-string "42")))
@@ -248,3 +256,8 @@
   (is (= {:foo 'bar} (meta (read-string "^{:foo bar} 'baz"))))
   (is (= {:tag "foo"} (meta (read-string "^\"foo\" 'bar"))))
   (is (= {:tag 'String} (meta (read-string "^String 'x")))))
+
+(deftest read-comment
+  (is (thrown? Exception (read-string ";; foo\n")))
+  (is (= ";; foo" 
+         (read (string-push-back-reader ";; foo\n") true nil false true))))

@@ -4,7 +4,7 @@
         [clojure.test :only [deftest is]])
   (:import clojure.lang.BigInt))
 
-(load "common_tests")
+;;(load "common_tests")
 
 (deftest read-keyword
   (is (= :foo-bar (read-string ":foo-bar")))
