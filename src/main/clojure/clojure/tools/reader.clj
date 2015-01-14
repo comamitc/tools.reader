@@ -598,7 +598,7 @@
   (case ch
     \" read-string*
     \: read-keyword
-    \; (if @preserve-comments? read-comment ignore-comments)
+    \; (if @preserve-comments? read-comment ignore-comment)
     \' (wrapping-reader 'quote)
     \@ (wrapping-reader 'clojure.core/deref)
     \^ read-meta
